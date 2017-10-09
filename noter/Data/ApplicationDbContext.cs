@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using noter.Models;
+using noter.Entities;
 
 namespace noter.Data
 {
@@ -22,5 +23,7 @@ namespace noter.Data
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
         }
+
+        public DbSet<noter.Entities.Note> Note { get; set; }
     }
 }
