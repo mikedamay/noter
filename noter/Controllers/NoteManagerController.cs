@@ -7,22 +7,27 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using noter.Data;
 using noter.Entities;
+using noter.Services;
 
 namespace noter.Controllers
 {
     public class NoteManagerController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private INoteManager _noteManager;
 
-        public NoteManagerController(ApplicationDbContext context)
+        public NoteManagerController(ApplicationDbContext context, INoteManager noteManager)
         {
             _context = context;
+            this._noteManager = noteManager;
         }
 
         // GET: NoteManager
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Note.ToListAsync());
+            //var vv = View(await _context.Note.ToListAsync());
+            var list = await _noteManager.GetNotes();
+            return View(list);
         }
 
         // GET: NoteManager/Details/5
@@ -32,15 +37,12 @@ namespace noter.Controllers
             {
                 return NotFound();
             }
-
-            var note = _context.Note
-                .SingleOrDefaultAsync(m => m.Id == id);
-            note.Wait();
+            Note note = await _noteManager.GetDetails(id);
             if (note == null)
             {
                 return NotFound();
             }
-            return View(note.Result);
+            return View(note);
         }
 
         // GET: NoteManager/Create
@@ -59,8 +61,7 @@ namespace noter.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(note);
-                await _context.SaveChangesAsync();
+                await _noteManager.Add(note);
                 return RedirectToAction(nameof(Index));
             }
             return View(note);

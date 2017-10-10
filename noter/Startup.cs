@@ -35,7 +35,7 @@ namespace noter
 
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
-
+            services.AddTransient<INoteManager, NoteManager>();
             services.AddMvc();
         }
 
