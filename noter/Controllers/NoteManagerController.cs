@@ -33,13 +33,14 @@ namespace noter.Controllers
                 return NotFound();
             }
 
-            var note = await _context.Note
+            var note = _context.Note
                 .SingleOrDefaultAsync(m => m.Id == id);
+            note.Wait();
             if (note == null)
             {
                 return NotFound();
             }
-            return View(note);
+            return View(note.Result);
         }
 
         // GET: NoteManager/Create
