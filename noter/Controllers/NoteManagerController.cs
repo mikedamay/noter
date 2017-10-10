@@ -39,14 +39,14 @@ namespace noter.Controllers
             {
                 return NotFound();
             }
-
             return View(note);
         }
 
         // GET: NoteManager/Create
         public IActionResult Create()
         {
-            return View();
+            var vv = View();
+            return vv;
         }
 
         // POST: NoteManager/Create
