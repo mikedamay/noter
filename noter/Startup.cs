@@ -28,14 +28,15 @@ namespace noter
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
+            services.AddDbContext<NoteDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("NoteConnection")));
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
-            services.AddTransient<INoteManager, NoteManager>();
+            services.AddScoped<INoteManager, NoteManager>();
             services.AddMvc();
         }
 
@@ -61,7 +62,7 @@ namespace noter
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=NoteManager}/{action=Index}/{id?}");
             });
         }
     }

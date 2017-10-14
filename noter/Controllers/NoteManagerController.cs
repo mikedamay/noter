@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using noter.Data;
+//using Microsoft.EntityFrameworkCore;
 using noter.Entities;
 using noter.Services;
 
@@ -13,20 +9,17 @@ namespace noter.Controllers
 {
     public class NoteManagerController : Controller
     {
-        private readonly ApplicationDbContext _context;
         private INoteManager _noteManager;
 
-        public NoteManagerController(ApplicationDbContext context, INoteManager noteManager)
+        public NoteManagerController( INoteManager noteManager)
         {
-            _context = context;
             this._noteManager = noteManager;
         }
 
         // GET: NoteManager
         public async Task<IActionResult> Index()
         {
-            //var vv = View(await _context.Note.ToListAsync());
-            var list = await _noteManager.GetNotes();
+            var list = await _noteManager.ListNotes();
             return View(list);
         }
 
@@ -61,7 +54,7 @@ namespace noter.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _noteManager.Add(note);
+                await _noteManager.AddNote(note);
                 return RedirectToAction(nameof(Index));
             }
             return View(note);
@@ -75,7 +68,7 @@ namespace noter.Controllers
                 return NotFound();
             }
 
-            var note = await _context.Note.SingleOrDefaultAsync(m => m.Id == id);
+            var note = await _noteManager.GetNoteById(id.Value);
             if (note == null)
             {
                 return NotFound();
@@ -97,23 +90,16 @@ namespace noter.Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                UpdateResult result = await _noteManager.UpdateNote(note);
+                switch (result)
                 {
-                    _context.Update(note);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!NoteExists(note.Id))
-                    {
+                    case UpdateResult.Success:
+                        return RedirectToAction(nameof(Index));
+                    case UpdateResult.NoteAlreadyDeleted:
                         return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    case UpdateResult.ConcurrencyConflict:
+                        throw new Exception("Another user has edited this record.  Please try again");
                 }
-                return RedirectToAction(nameof(Index));
             }
             return View(note);
         }
@@ -126,8 +112,7 @@ namespace noter.Controllers
                 return NotFound();
             }
 
-            var note = await _context.Note
-                .SingleOrDefaultAsync(m => m.Id == id);
+            var note = await _noteManager.GetNoteById(id.Value);
             if (note == null)
             {
                 return NotFound();
@@ -141,15 +126,13 @@ namespace noter.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
-            var note = await _context.Note.SingleOrDefaultAsync(m => m.Id == id);
-            _context.Note.Remove(note);
-            await _context.SaveChangesAsync();
+            await _noteManager.DeleteNote(id);
             return RedirectToAction(nameof(Index));
         }
 
         private bool NoteExists(long id)
         {
-            return _context.Note.Any(e => e.Id == id);
+            return _noteManager.NoteExists(id);
         }
     }
 }
