@@ -10,10 +10,12 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Index</title>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css"/>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap-theme.css"></>
 </head>
 <body>
 <p>
-    <a asp-action="Create">Create New</a>
+    <a class="btn btn-primary" asp-action="Create">Create New</a>
 </p>
 <table class="table">
     <thead>
@@ -31,9 +33,9 @@
                 @Html.DisplayFor(modelItem => item.Payload)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a class="btn" asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a class="btn" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
 }
