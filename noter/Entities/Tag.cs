@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
 
 namespace noter.Entities
 {
@@ -10,5 +12,7 @@ namespace noter.Entities
         [MaxLength(80)]
         public string ShortDescription { get; set; }
         public string Details { get; set; }
+        
+        public HashSet<Tag> Tags { get; set; }
     }
 }

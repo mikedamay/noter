@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using noter.Entities;
 
 namespace noter.Data
 {
@@ -14,5 +15,7 @@ namespace noter.Data
         }
 
         public DbSet<noter.Entities.Note> Note { get; set; }
+        public DbSet<Tag> Tag { get; set; }
+        public DbSet<User> User { get; set; }
     }
 }
