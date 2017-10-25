@@ -11,9 +11,10 @@ using System;
 namespace noter.Migrations
 {
     [DbContext(typeof(NoteDbContext))]
-    partial class NoteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20171024090957_Cleanup3")]
+    partial class Cleanup3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,28 +28,17 @@ namespace noter.Migrations
 
                     b.Property<string>("Payload");
 
-                    b.Property<long?>("TagId");
+                    b.Property<long>("TagId");
 
                     b.Property<long?>("UserId");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("TagId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("Note");
-                });
-
-            modelBuilder.Entity("noter.Entities.NoteTag", b =>
-                {
-                    b.Property<long>("NoteId");
-
-                    b.Property<long>("TagId");
-
-                    b.HasKey("NoteId", "TagId");
-
-                    b.HasIndex("TagId");
-
-                    b.ToTable("NoteTag");
                 });
 
             modelBuilder.Entity("noter.Entities.Tag", b =>
@@ -83,22 +73,14 @@ namespace noter.Migrations
 
             modelBuilder.Entity("noter.Entities.Note", b =>
                 {
+                    b.HasOne("noter.Entities.Tag")
+                        .WithMany("Notes")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("noter.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("noter.Entities.NoteTag", b =>
-                {
-                    b.HasOne("noter.Entities.Note", "Note")
-                        .WithMany("NoteTags")
-                        .HasForeignKey("NoteId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("noter.Entities.Tag", "Tag")
-                        .WithMany("NoteTags")
-                        .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }
