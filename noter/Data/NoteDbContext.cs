@@ -24,5 +24,7 @@ namespace noter.Data
         public DbSet<noter.Entities.Note> Note { get; set; }
         public DbSet<Tag> Tag { get; set; }
         public DbSet<User> User { get; set; }
+        public DbSet<NoteTag> NoteTag { get; set; }
+        public DbSet<Another> Another { get; set; }
     }
 }
