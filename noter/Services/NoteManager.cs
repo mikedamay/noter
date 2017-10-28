@@ -2,8 +2,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using noter.Data;
 using noter.Entities;
+using Microsoft.Extensions.Logging;
 
 namespace noter.Services
 {
@@ -21,10 +23,13 @@ namespace noter.Services
     public class NoteManager : INoteManager
     {
         private NoteDbContext _context;
-
-        public NoteManager(NoteDbContext dbContext)
+        private ILogger<NoteManager> _logger;
+        
+        public NoteManager(NoteDbContext dbContext, ILogger<NoteManager> logger)
         {
+            this._logger = logger;
             this._context = dbContext;
+            _logger.LogInformation(1, "created NoteManager");
         }
         public async Task<IList<Note>> ListNotes()
         {
@@ -41,6 +46,7 @@ namespace noter.Services
         public async Task<Note> GetDetails(long? id)
         {
             var note = await _context.Note
+//                .Include(n => n.NoteTags)
                 .SingleOrDefaultAsync(m => m.Id == id);
             return note;
         }
@@ -48,7 +54,11 @@ namespace noter.Services
         public async Task<int> AddNote(Note note)
         {
             _context.Add(note);
+            _logger.LogDebug(1234, "about to write NoteTag");
+            var nt = new NoteTag {NoteId = note.Id, TagId = 1};
+            _context.Add(nt);
             int x =await _context.SaveChangesAsync();
+//            x =await _context.SaveChangesAsync();
             return x;
         }
         public async Task<UpdateResult> UpdateNote(Note note)
