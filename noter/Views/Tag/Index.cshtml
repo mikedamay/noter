@@ -1,0 +1,25 @@
+﻿@model IEnumerable<noter.Entities.Tag>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>title</title>
+</head>
+<body>
+<div>
+    <ul>
+        <p>This is an index - take note</p>
+        @foreach (var item in Model)
+        {
+            <li>@Html.DisplayFor(it => item.Name)</li>
+        }
+    </ul>
+
+</div>
+</body>
+</html>
