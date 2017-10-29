@@ -1,0 +1,42 @@
+﻿@model noter.Entities.Tag
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "/Views/Shared/_MainLayout.cshtml";
+}
+
+<h2>Tag Details</h2>
+<hr />
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(mod => mod.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(mod => mod.Name)
+        </dd>
+    </dl>
+</div>
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(mod => mod.ShortDescription)
+        </dt>
+        <dd>
+            @Html.DisplayFor(mod => mod.ShortDescription)
+        </dd>
+    </dl>
+</div>
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(mod => mod.Details)
+        </dt>
+        <dd>
+            @Html.DisplayFor(mod => mod.Details)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a class="btn btn-primary" asp-action="Index">List</a>
+</div>

@@ -20,6 +20,20 @@ namespace noter.Services
         {
             var list = await _dbContext.Tag.ToListAsync();
             return list;
-        } 
+        }
+
+        public async Task<Tag> GetById(long id)
+        {
+            var tag = await _dbContext.Tag.SingleAsync(t => t.Id == id);
+            return tag;
+        }
+
+        public async Task AddAsync(Tag tag)
+        {
+            _dbContext.Tag.Add(tag);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        
     }
 }

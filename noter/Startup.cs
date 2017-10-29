@@ -64,7 +64,7 @@ namespace noter
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=NoteManager}/{action=Index}/{id?}");
+                    template: "{controller=Tag}/{action=Index}/{id?}");
             });
         }
     }

@@ -1,30 +1,31 @@
 ﻿@model IEnumerable<noter.Entities.Tag>
 
 @{
-    Layout = null;
+    Layout = "_Mainlayout";
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <title>title</title>
-    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css"/>
-    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap-theme.css"></>
-</head>
-<body>
 <p>
-    <a asp-action="Create">Create New</a>
+    <a class="btn btn-primary" asp-action="Create">Create New</a>
 </p>
-<div>
-    <ul>
-        <p>This is an index - take note</p>
-        @foreach (var item in Model)
-        {
-            <li>@Html.DisplayFor(it => item.Name)</li>
-        }
-    </ul>
-
-</div>
-</body>
-</html>
+<table class="table">
+    <thead>
+    <tr>
+        <td>
+            @Html.DisplayNameFor(mm => mm.Name)
+        </td>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(it => item.Name)
+            </td>
+            <td>
+                <a class="btn btn-primary" asp-action="Details" asp-route-id='@item.Id'>Details</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
