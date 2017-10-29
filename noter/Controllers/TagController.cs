@@ -18,7 +18,14 @@ namespace noter.Controllers
         {
             IList<Tag> stuff = await _tagService.ListAll();
             return View(stuff);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Create()
+        {
+            await Task.CompletedTask;
+            IList<Tag> stuff = await _tagService.ListAll();
+            return View("Index", stuff);
         } 
-            
     }
 }
