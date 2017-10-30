@@ -34,6 +34,22 @@ namespace noter.Services
             await _dbContext.SaveChangesAsync();
         }
 
-        
+        public async Task UpdateAsync(Tag tag)
+        {
+            _dbContext.Tag.Update(tag);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task Delete(long id)
+        {
+            var tag = await _dbContext.Tag.SingleAsync(t => t.Id == id);
+            _dbContext.Tag.Remove(tag);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public bool NoteExists(long id)
+        {
+            return _dbContext.Tag.Any(t => t.Id == id);
+        }
     }
 }
