@@ -1,0 +1,35 @@
+﻿@model IEnumerable<noter.ViewModel.SelectableTag>
+
+<h2>@ViewBag.Title</h2>
+
+<table class="table">
+    <thead>
+    <tr>
+        <td>
+            
+        </td>
+        <td>
+            @Html.DisplayNameFor(m => m.Name)
+        </td>
+        <td>
+            @Html.DisplayNameFor(m => m.ShortDescription)
+        </td>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var it in Model)
+    {
+        <tr>
+            <td>
+                @Html.CheckBoxFor(m => it.Included)
+            </td>
+            <td>
+                @Html.DisplayFor(m => it.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(m => it.ShortDescription)
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

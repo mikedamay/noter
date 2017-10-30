@@ -1,19 +1,23 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 //using Microsoft.EntityFrameworkCore;
 using noter.Entities;
 using noter.Services;
+using noter.ViewModel;
 
 namespace noter.Controllers
 {
     public class NoteManagerController : Controller
     {
         private INoteManager _noteManager;
+        private TagService _tagService;
 
-        public NoteManagerController( INoteManager noteManager)
+        public NoteManagerController( INoteManager noteManager, TagService tagService)
         {
             this._noteManager = noteManager;
+            this._tagService = tagService;
         }
 
         // GET: NoteManager
@@ -67,13 +71,17 @@ namespace noter.Controllers
             {
                 return NotFound();
             }
-
+            
             var note = await _noteManager.GetNoteById(id.Value);
             if (note == null)
             {
                 return NotFound();
             }
-            return View(note);
+            var list = await _tagService.ListAll();
+            var tagParts =  list.Select(t => 
+                new SelectableTag {Id = t.Id, Name =  t.Name, ShortDescription = t.ShortDescription, Included = false});
+
+            return View(new EditNoteVM { Note = note, SelectableTags = tagParts});
         }
 
         // POST: NoteManager/Edit/5
@@ -81,19 +89,20 @@ namespace noter.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Payload")] Note note)
+        public async Task<IActionResult> Edit(long id, EditNoteVM vm)
         {
-            if (id != note.Id)
+            if (id != vm.Note.Id)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                UpdateResult result = await _noteManager.UpdateNote(note);
+                UpdateResult result = await _noteManager.UpdateNote(vm.Note);
                 switch (result)
                 {
                     case UpdateResult.Success:
+//                        return View(new EditNoteVM {Note = vm.Note, SelectableTags = vm.SelectableTags});
                         return RedirectToAction(nameof(Index));
                     case UpdateResult.NoteAlreadyDeleted:
                         return NotFound();
@@ -101,7 +110,7 @@ namespace noter.Controllers
                         throw new Exception("Another user has edited this record.  Please try again");
                 }
             }
-            return View(note);
+            return View(vm);
         }
 
         // GET: NoteManager/Delete/5

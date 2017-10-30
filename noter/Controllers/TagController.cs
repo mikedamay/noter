@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Rewrite.Internal.UrlActions;
 using noter.Services;
 using noter.Entities;
+using System.Linq;
+using noter.ViewModel;
 
 namespace noter.Controllers
 {
@@ -89,6 +91,14 @@ namespace noter.Controllers
         private bool NoteExists(long id)
         {
             return _tagService.NoteExists(id);
+        }
+
+        public async Task<IActionResult> Select()
+        {
+            var list = await _tagService.ListAll();
+            var tagParts =  list.Select(t => 
+              new SelectableTag {Id = t.Id, Name =  t.Name, ShortDescription = t.ShortDescription, Included = false});
+            return View(tagParts);
         }
     }
 }

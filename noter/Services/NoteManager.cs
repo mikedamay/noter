@@ -55,7 +55,7 @@ namespace noter.Services
         {
             _context.Add(note);
             _logger.LogDebug(1234, "about to write NoteTag");
-            var nt = new NoteTag {NoteId = note.Id, TagId = 1};
+            var nt = new NoteTag {NoteId = note.Id, TagId = 2};
             _context.Add(nt);
             int x =await _context.SaveChangesAsync();
 //            x =await _context.SaveChangesAsync();

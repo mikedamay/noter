@@ -1,4 +1,4 @@
-﻿@model noter.Entities.Note
+﻿@model noter.ViewModel.EditNoteVM
 
 @{
     Layout = null;
@@ -13,18 +13,20 @@
 </head>
 <body>
 
+
 <h4>Note</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="Note.Id" />
             <div class="form-group">
-                <label asp-for="Payload" class="control-label"></label>
-                <input asp-for="Payload" class="form-control" />
-                <span asp-validation-for="Payload" class="text-danger"></span>
+                <label asp-for="Note.Payload" class="control-label"></label>
+                <input asp-for="Note.Payload" class="form-control" />
+                <span asp-validation-for="Note.Payload" class="text-danger"></span>
             </div>
+            @Html.Partial("~/Views/Tag/Select.cshtml", Model.SelectableTags)
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-default" />
             </div>
@@ -32,9 +34,12 @@
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+
+
+<div class="row">
+    <a class="btn" asp-action="Index">Back to List</a>
 </div>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
