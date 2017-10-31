@@ -1,5 +1,12 @@
 ﻿@model List<noter.ViewModel.SelectableTag>
+@functions {
 
+    string GetTagControlName(int index, string propertyName)
+    {
+        return $"{ViewBag.TagListName}[{index}].{propertyName}";
+    }
+
+}
 <h2>Tags</h2>
 
 <table class="table">
@@ -23,17 +30,16 @@
         {
             <tr>
                 <td>
-                    <input asp-for="@mi.Id" type="hidden" name = "SelectableTags[@ii].Id"/>
-                    @*                    @Html.CheckBoxFor(m => SelectableTags.Included)*@
-                    <input asp-for="@mi.Included" type="checkbox" name="@{ViewBag.TagList}[@ii].Included"/>
+                    <input asp-for="@mi.Id" type="hidden" name = "@GetTagControlName(ii, nameof(mi.Id))"/>
+                    <input asp-for="@mi.Included" type="checkbox" name="@GetTagControlName(ii, nameof(mi.Included))"/>
                 </td>
                 <td>
                     @Html.DisplayFor(m => mi.Name)
-                    <input asp-for="@mi.Name" type="hidden" name="@{ViewBag.TagList}[@ii].Name"/>
+                    <input asp-for="@mi.Name" type="hidden" name="@GetTagControlName(ii, nameof(mi.Name))"/>
                 </td>
                 <td>
                     @Html.DisplayFor(m => mi.ShortDescription)
-                    <input asp-for="@mi.ShortDescription" type="hidden" name="@{ViewBag.TagList}[@ii].ShortDescription"/>
+                    <input asp-for="@mi.ShortDescription" type="hidden" name="@GetTagControlName(ii, nameof(mi.ShortDescription))"/>
                 </td>
             </tr>
             ii++;
