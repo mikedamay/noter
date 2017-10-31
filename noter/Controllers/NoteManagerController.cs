@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -77,9 +78,11 @@ namespace noter.Controllers
             {
                 return NotFound();
             }
+            HashSet<long> tagIds = note.NoteTags.Select(nt => nt.TagId).ToHashSet();
             var list = await _tagService.ListAll();
             var tagParts =  list.Select(t => 
-                new SelectableTag {Id = t.Id, Name =  t.Name, ShortDescription = t.ShortDescription, Included = false})
+                new SelectableTag {Id = t.Id, Name =  t.Name, ShortDescription = t.ShortDescription
+                , Included = tagIds.Contains(t.Id)})
                 .ToList();
 
             return View(new EditNoteVM { Note = note, SelectableTags = tagParts});
@@ -99,7 +102,8 @@ namespace noter.Controllers
 
             if (ModelState.IsValid)
             {
-                UpdateResult result = await _noteManager.UpdateNote(vm.Note);
+                IEnumerable<long> tagIds = vm.SelectableTags.Where(st => st.Included).Select(st => st.Id);
+                UpdateResult result = await _noteManager.UpdateNote(vm.Note, tagIds);
                 switch (result)
                 {
                     case UpdateResult.Success:
