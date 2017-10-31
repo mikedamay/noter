@@ -2,6 +2,7 @@
 
 @{
     Layout = null;
+    ViewBag.TagList = nameof(Model.SelectableTags);
 }
 
 <!DOCTYPE html>
@@ -25,6 +26,11 @@
                 <label asp-for="Note.Payload" class="control-label"></label>
                 <input asp-for="Note.Payload" class="form-control" />
                 <span asp-validation-for="Note.Payload" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Checker" class="control-label"></label>
+                <input type="checkbox" asp-for="Checker" class="form-control" />
+                <span asp-validation-for="Checker" class="text-danger"></span>
             </div>
             @Html.Partial("~/Views/Tag/Select.cshtml", Model.SelectableTags)
             <div class="form-group">

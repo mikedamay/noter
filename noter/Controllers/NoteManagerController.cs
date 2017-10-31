@@ -79,7 +79,8 @@ namespace noter.Controllers
             }
             var list = await _tagService.ListAll();
             var tagParts =  list.Select(t => 
-                new SelectableTag {Id = t.Id, Name =  t.Name, ShortDescription = t.ShortDescription, Included = false});
+                new SelectableTag {Id = t.Id, Name =  t.Name, ShortDescription = t.ShortDescription, Included = false})
+                .ToList();
 
             return View(new EditNoteVM { Note = note, SelectableTags = tagParts});
         }

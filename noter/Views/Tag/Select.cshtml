@@ -1,6 +1,6 @@
-﻿@model IEnumerable<noter.ViewModel.SelectableTag>
+﻿@model List<noter.ViewModel.SelectableTag>
 
-<h2>@ViewBag.Title</h2>
+<h2>Tags</h2>
 
 <table class="table">
     <thead>
@@ -9,27 +9,35 @@
             
         </td>
         <td>
-            @Html.DisplayNameFor(m => m.Name)
+            @Html.DisplayNameFor(m => m[0].Name)
         </td>
         <td>
-            @Html.DisplayNameFor(m => m.ShortDescription)
+            @Html.DisplayNameFor(m => m[0].ShortDescription)
         </td>
     </tr>
     </thead>
     <tbody>
-    @foreach (var it in Model)
-    {
-        <tr>
-            <td>
-                @Html.CheckBoxFor(m => it.Included)
-            </td>
-            <td>
-                @Html.DisplayFor(m => it.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(m => it.ShortDescription)
-            </td>
-        </tr>
+    @{
+        int ii = 0;
+        foreach (var mi in Model)
+        {
+            <tr>
+                <td>
+                    <input asp-for="@mi.Id" type="hidden" name = "SelectableTags[@ii].Id"/>
+                    @*                    @Html.CheckBoxFor(m => SelectableTags.Included)*@
+                    <input asp-for="@mi.Included" type="checkbox" name="@{ViewBag.TagList}[@ii].Included"/>
+                </td>
+                <td>
+                    @Html.DisplayFor(m => mi.Name)
+                    <input asp-for="@mi.Name" type="hidden" name="@{ViewBag.TagList}[@ii].Name"/>
+                </td>
+                <td>
+                    @Html.DisplayFor(m => mi.ShortDescription)
+                    <input asp-for="@mi.ShortDescription" type="hidden" name="@{ViewBag.TagList}[@ii].ShortDescription"/>
+                </td>
+            </tr>
+            ii++;
+        }
     }
     </tbody>
 </table>
