@@ -1,0 +1,38 @@
+﻿@using noter.Entities
+@model noter.ViewModel.NoteAndCommentVM
+
+@{
+    ViewBag.Title = "Add Comment";
+    Layout = "_MainLayout";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="row">
+    <div class="md-col-4 md-col-offset-4">
+        <div>
+            <dl>
+                <dt>
+                    @Html.DisplayNameFor(nac => nac.Note.Payload)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(nac => nac.Note.Payload)
+                </dd>
+            </dl>
+        </div>
+        <div>
+            <form asp-action="AddComment">
+                <input type="hidden" asp-for="Note.Id"/>
+                <input type="hidden" asp-for="Note.Payload"/>
+                <div class="form-group">
+                    <label asp-for="Comment.Payload" class="control-label"></label>
+                    <input asp-for="Comment.Payload" class="form-control"/>
+                    <span asp-validation-for="Comment.Payload" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" name="AddComment" class="btn btn-default btn-primary"/>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -36,6 +36,7 @@ namespace noter.Controllers
                 await _tagService.AddAsync(tag);
                 return RedirectToAction(nameof(index));
             }
+            ModelState.AddModelError("", "I just don't like this model");
             return View();
         }
 

@@ -11,7 +11,8 @@ namespace noter.Data
     {
         public NoteDbContext(DbContextOptions<NoteDbContext> options) : base(options)
         {
-            
+            this.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+
         }
 
         protected override void OnModelCreating(ModelBuilder mb)
@@ -26,5 +27,6 @@ namespace noter.Data
         public DbSet<User> User { get; set; }
         public DbSet<NoteTag> NoteTag { get; set; }
         public DbSet<Another> Another { get; set; }
+        public DbSet<Comment> CommentSet { get; set; }
     }
 }

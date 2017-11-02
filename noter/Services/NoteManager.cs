@@ -21,6 +21,7 @@ namespace noter.Services
         Task<int> DeleteNote(long id);
         Task<Note> GetNoteById(long id);
         bool NoteExists(long id);
+        Task<int> AddComment(Note vmNote);
     }
     public class NoteManager : INoteManager
     {
@@ -136,6 +137,13 @@ namespace noter.Services
         public bool NoteExists(long id)
         {
             return _context.Note.Any(e => e.Id == id);
+        }
+
+        public async Task<int> AddComment(Note note)
+        {
+            _context.CommentSet.AddRange(note.Comments);
+            int x = await _context.SaveChangesAsync();
+            return x;
         }
     }
 }

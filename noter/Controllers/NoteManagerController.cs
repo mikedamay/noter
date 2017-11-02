@@ -144,9 +144,40 @@ namespace noter.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpGet]
+        public async Task<IActionResult> AddComment(long Id)
+        {
+            var note = await _noteManager.GetNoteById(Id);
+            if (note == null)
+            {
+                return NotFound();
+            }
+            return View(new noter.ViewModel.NoteAndCommentVM{Note = note, Comment = new Comment()});
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddComment(NoteAndCommentVM vm)
+        {
+            if (ModelState.IsValid)
+            {
+                vm.Note.Comments.Add(vm.Comment);
+                await _noteManager.AddComment(vm.Note);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(vm);
+        }
         private bool NoteExists(long id)
         {
             return _noteManager.NoteExists(id);
         }
+    }
+}
+
+namespace noter.ViewModel
+{
+    public class NoteAndCommentVM
+    {
+        public Note Note { get; set; }
+        public Comment Comment { get; set; }
     }
 }
