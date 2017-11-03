@@ -142,6 +142,10 @@ namespace noter.Services
         public async Task<int> AddComment(Note note)
         {
             _context.CommentSet.AddRange(note.Comments);
+            foreach (Comment c in note.Comments)
+            {
+                _context.Entry(c).Property("NoteId").CurrentValue = note.Id;
+            }
             int x = await _context.SaveChangesAsync();
             return x;
         }

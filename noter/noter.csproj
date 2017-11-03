@@ -19,4 +19,12 @@
       <HintPath>..\..\aspnet\Universe\.r\StaticFiles\src\Microsoft.AspNetCore.StaticFiles\Microsoft.AspNetCore.StaticFiles.csproj</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\dotnetcore\ef\inter\EFCore.Relational\EFCore.Relational.csproj" />
+    <ProjectReference Include="..\..\dotnetcore\ef\inter\EFCore.Relational\EFCore.Relational.csproj" />
+    <ProjectReference Include="..\..\dotnetcore\ef\inter\EFCore.SqlServer\EFCore.SqlServer.csproj" />
+    <ProjectReference Include="..\..\dotnetcore\ef\inter\EFCore.SqlServer\EFCore.SqlServer.csproj" />
+    <ProjectReference Include="..\..\dotnetcore\ef\inter\EFCore\EFCore.csproj" />
+    <ProjectReference Include="..\..\dotnetcore\ef\inter\EFCore\EFCore.csproj" />
+  </ItemGroup>
 </Project>
