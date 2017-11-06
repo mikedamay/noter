@@ -1,0 +1,44 @@
+﻿@model System.Collections.Generic.IEnumerable<noter.Entities.Note>
+
+
+<div>
+    @*
+    <form asp-action="Create" asp-controller="NoteManager">
+        <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+*@
+    <a asp-action="Create" asp-controller="NoteManager">Create New</a>
+</div>
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Payload)
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Payload)
+            </td>
+            <td>
+                <a class="btn btn-sm" asp-action="Edit" asp-controller="NoteManager" asp-route-id="@item.Id" aria-label="Edit">
+                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                </a>
+                <a class="btn btn-sm" asp-action="Details" asp-controller="NoteManager" asp-route-id="@item.Id" aria-label="Details">
+                    <span class="glyphicon glyphicon-expand" aria-hidden="true"></span>
+                </a>
+                <a class="btn btn-sm" asp-action="Delete" asp-controller="NoteManager" asp-route-id="@item.Id" aria-label="Delete">
+                    <span class="glyphicon-remove" aria-hidden="true"></span>
+                </a>
+                <a class="btn" asp-action="AddComment" asp-controller="NoteManager" asp-route-id="@item.Id" aria-label="Add Comment">
+                    <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
+                </a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
