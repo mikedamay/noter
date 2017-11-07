@@ -3,6 +3,7 @@
 @{
     Layout = null;
 //    var mod = Model.ToList();
+    var noteListViewComponent = "NoteList";
 }
 
 <!DOCTYPE html>
@@ -19,7 +20,7 @@
     <a class='btn btn-primary' asp-action="Create">Create New</a>
 </p>
 
-@await Component.InvokeAsync("NoteList")
+@await Component.InvokeAsync(noteListViewComponent)
 
 </body>
 </html>

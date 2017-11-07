@@ -1,12 +1,17 @@
 ﻿@model List<noter.ViewModel.SelectableTag>
 @functions {
 
+    // the form in this view returns a list of tags that needs to be bound
+    // to the EditModelVM.  The elements of the list need to have names that
+    // fit with the EditModelVM.
+    // e.g. GetTagControlName(2, "Name") => "Model.SelectableTags[2].Name"
     string GetTagControlName(int index, string propertyName)
     {
         return $"{ViewBag.TagListName}[{index}].{propertyName}";
     }
 
 }
+
 <h2>Tags</h2>
 
 <table class="table">

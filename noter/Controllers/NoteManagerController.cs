@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Differencing;
 //using Microsoft.EntityFrameworkCore;
 using noter.Entities;
 using noter.Services;
@@ -78,14 +79,8 @@ namespace noter.Controllers
             {
                 return NotFound();
             }
-            HashSet<long> tagIds = note.NoteTags.Select(nt => nt.TagId).ToHashSet();
-            var list = await _tagService.ListAll();
-            var tagParts =  list.Select(t => 
-                new SelectableTag {Id = t.Id, Name =  t.Name, ShortDescription = t.ShortDescription
-                , Included = tagIds.Contains(t.Id)})
-                .ToList();
-
-            return View(new EditNoteVM { Note = note, SelectableTags = tagParts});
+            ViewBag.SubViewName = "Edit";
+            return View("Maintenance", await GetEditNoteVmAsync(note));
         }
 
         // POST: NoteManager/Edit/5
@@ -131,8 +126,8 @@ namespace noter.Controllers
             {
                 return NotFound();
             }
-
-            return View(note);
+            ViewBag.SubViewName = "Delete";
+            return View("Maintenance", await GetEditNoteVmAsync(note));
         }
 
         // POST: NoteManager/Delete/5
@@ -169,6 +164,17 @@ namespace noter.Controllers
         private bool NoteExists(long id)
         {
             return _noteManager.NoteExists(id);
+        }
+
+        private async Task<EditNoteVM> GetEditNoteVmAsync(Note note)
+        {
+            HashSet<long> tagIds = note.NoteTags.Select(nt => nt.TagId).ToHashSet();
+            var list = await _tagService.ListAll();
+            var tagParts =  list.Select(t => 
+                    new SelectableTag {Id = t.Id, Name =  t.Name, ShortDescription = t.ShortDescription
+                        , Included = tagIds.Contains(t.Id)})
+                .ToList();
+            return new EditNoteVM { Note = note, SelectableTags = tagParts};
         }
     }
 }
