@@ -99,7 +99,7 @@ namespace noter.Controllers
             if (ModelState.IsValid)
             {
                 IEnumerable<SelectableTag> selectableTags = vm.SelectableTags;
-                UpdateResult result = await _noteManager.UpdateNote(vm.Note, selectableTags);
+                UpdateResult result = await _noteManager.UpdateNote(vm.Note, selectableTags, vm.Comment);
                 switch (result)
                 {
                     case UpdateResult.Success:

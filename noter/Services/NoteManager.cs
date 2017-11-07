@@ -18,8 +18,7 @@ namespace noter.Services
     {
         Task<IList<Note>> ListNotes();
         Task<Note> GetDetails(long? id);
-        Task<int> AddNote(Note note);
-        Task<UpdateResult> UpdateNote(Note note, IEnumerable<SelectableTag> tagIds);
+        Task<UpdateResult> UpdateNote(Note note, IEnumerable<SelectableTag> tagIds, Comment comment);
         Task<int> DeleteNote(long id);
         Task<Note> GetNoteById(long id);
         bool NoteExists(long id);
@@ -59,18 +58,7 @@ namespace noter.Services
             return note;
         }
 
-        public async Task<int> AddNote(Note note)
-        {
-            _context.Add(note);
-            _logger.LogDebug(1234, "about to write NoteTag");
-            var nt = new NoteTag {NoteId = note.Id, TagId = 2};
-            _context.Add(nt);
-            int x = await _context.SaveChangesAsync();
-//            x =await _context.SaveChangesAsync();
-            return x;
-        }
-
-        public async Task<UpdateResult> UpdateNote(Note note, IEnumerable<SelectableTag> selectableTags)
+        public async Task<UpdateResult> UpdateNote(Note note, IEnumerable<SelectableTag> selectableTags, Comment comment)
         {
             if (note.NoteTags == null)
             {
@@ -79,6 +67,7 @@ namespace noter.Services
             try
             {
                 _context.Database.ExecuteSqlCommand("delete from NoteTag where Noteid = {0}", note.Id);
+                _context.Database.ExecuteSqlCommand("delete from Comments where Noteid = {0}", note.Id);
 
                 if (note.Id == Constants.NewEntityId)
                 {
@@ -88,10 +77,18 @@ namespace noter.Services
                 {
                     _context.Update(note);
                 }
+                if (!string.IsNullOrWhiteSpace(comment.Payload))
+                {
+                    note.Comments.Add(comment);
+                }
                 IncludeSelectedTagsInNote(note, selectableTags);
                 foreach (NoteTag ntt in note.NoteTags)
                 {
                     _context.NoteTag.Add(ntt);
+                }
+                foreach (var c in note.Comments)
+                {
+                    _context.CommentSet.Add(c);
                 }
                 int x = await _context.SaveChangesAsync();
                 return UpdateResult.Success;
