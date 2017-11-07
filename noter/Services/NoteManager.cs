@@ -18,7 +18,7 @@ namespace noter.Services
     {
         Task<IList<Note>> ListNotes();
         Task<Note> GetDetails(long? id);
-        Task<UpdateResult> UpdateNote(Note note, IEnumerable<SelectableTag> tagIds, Comment comment);
+        Task<UpdateResult> UpdateNote(Note note, IEnumerable<SelectableTag> tagIds, IEnumerable<Comment> comment);
         Task<int> DeleteNote(long id);
         Task<Note> GetNoteById(long id);
         bool NoteExists(long id);
@@ -45,7 +45,7 @@ namespace noter.Services
 
         public async Task<Note> GetNoteById(long id)
         {
-            var note = await _context.Note.Include(n => n.NoteTags).SingleOrDefaultAsync(m => m.Id == id);
+            var note = await _context.Note.Include(n => n.NoteTags).Include(n => n.Comments).SingleOrDefaultAsync(m => m.Id == id);
             var ll = _context.Note.ToList();
             return note;
         }
@@ -58,7 +58,7 @@ namespace noter.Services
             return note;
         }
 
-        public async Task<UpdateResult> UpdateNote(Note note, IEnumerable<SelectableTag> selectableTags, Comment comment)
+        public async Task<UpdateResult> UpdateNote(Note note, IEnumerable<SelectableTag> selectableTags, IEnumerable<Comment> comments)
         {
             if (note.NoteTags == null)
             {
@@ -77,9 +77,13 @@ namespace noter.Services
                 {
                     _context.Update(note);
                 }
-                if (!string.IsNullOrWhiteSpace(comment.Payload))
+                note.Comments.Clear();
+                foreach (var cmt in comments)
                 {
-                    note.Comments.Add(comment);
+                    if (!string.IsNullOrWhiteSpace(cmt.Payload))
+                    {
+                        note.Comments.Add(cmt);
+                    }
                 }
                 IncludeSelectedTagsInNote(note, selectableTags);
                 foreach (NoteTag ntt in note.NoteTags)

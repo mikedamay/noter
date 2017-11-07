@@ -99,7 +99,7 @@ namespace noter.Controllers
             if (ModelState.IsValid)
             {
                 IEnumerable<SelectableTag> selectableTags = vm.SelectableTags;
-                UpdateResult result = await _noteManager.UpdateNote(vm.Note, selectableTags, vm.Comment);
+                UpdateResult result = await _noteManager.UpdateNote(vm.Note, selectableTags, vm.Comments);
                 switch (result)
                 {
                     case UpdateResult.Success:
@@ -195,7 +195,7 @@ namespace noter.Controllers
                         , Included = tagIds.Contains(t.Id)})
                 .ToList();
                     
-            return new EditNoteVM { Note = note, SelectableTags = tagParts};
+            return new EditNoteVM { Note = note, SelectableTags = tagParts, Comments = note.Comments.ToList()};
         }
     }
 }

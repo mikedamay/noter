@@ -1,13 +1,13 @@
-﻿@model noter.Entities.Comment
+﻿@model IEnumerable<noter.Entities.Comment>
 
 @functions
 {
 
     // provide names like "Comment.Payload" rather than simply "Payload"
     // so that the binder will see something with the right shape
-    string GetFullPropertyyName(string propertyName)
+    string GetFullPropertyyName(int index, string propertyName)
     {
-        return $"{ViewBag.CommentEntityName}.{propertyName}";
+        return $"{ViewBag.CommentListName}[{index}].{propertyName}";
     }
     
 
@@ -19,17 +19,21 @@
                 <dt>
                     @Html.DisplayNameFor(nac => nac.Payload)
                 </dt>
-                <dd>
-                    @Html.DisplayFor(nac => nac.Payload)
-                </dd>
             </dl>
         </div>
         <div>
-            <div class="form-group">
-                <label asp-for="Payload" class="control-label"></label>
-                <input asp-for="Payload" class="form-control" name="@GetFullPropertyyName(nameof(Model.Payload))"/>
-                <span asp-validation-for="Payload" class="text-danger"></span>
-            </div>
+            @{
+                int ii = 0;
+                foreach (noter.Entities.Comment comment in Model)
+                {
+                    <div class="form-group">
+                        <label asp-for="@comment.Payload" class="control-label"></label>
+                        <input asp-for="@comment.Payload" class="form-control" name="@GetFullPropertyyName(ii, nameof(comment.Payload))"/>
+                        <span asp-validation-for="@comment.Payload" class="text-danger"></span>
+                    </div>
+                    ii++;
+                }
+            }
             <div class="form-group">
                 <input type="submit" name="AddComment" class="btn btn-default btn-primary"/>
             </div>

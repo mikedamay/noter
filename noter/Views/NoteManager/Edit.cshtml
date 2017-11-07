@@ -3,7 +3,7 @@
 @{
     Layout = null;
     ViewBag.TagListName = nameof(Model.SelectableTags);
-    ViewBag.CommentEntityName = nameof(Model.Comment);
+    ViewBag.CommentListName = nameof(Model.Comments);
 }
 
 <h4>Note</h4>
@@ -24,7 +24,7 @@
                 <span asp-validation-for="Checker" class="text-danger"></span>
             </div>
             @Html.Partial("~/Views/Tag/Select.cshtml", Model.SelectableTags)
-            @Html.Partial("AddComment", Model.Comment)
+            @Html.Partial("AddComment", Model.Comments)
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-default" />
             </div>
