@@ -1,26 +1,14 @@
-﻿@*@model IEnumerable<noter.Entities.Note>*@
+﻿@using noter.Common
+@model noter.ViewModel.EditNoteVM
 
-@{
-    Layout = null;
-//    var mod = Model.ToList();
-    var noteListViewComponent = "NoteList";
-}
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Index</title>
-    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css"/>
-    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap-theme.css"></>
-</head>
-<body>
-<p>
-    <a class='btn btn-primary' asp-action="Create">Create New</a>
-</p>
-
-@await Component.InvokeAsync(noteListViewComponent)
-
-</body>
-</html>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" asp-controller="NoteManager" method="get">
+            <input name="Id" value="@Constants.NewEntityId" type="hidden"/>
+            <div class="form-group text-center">
+                <input type="submit" value="Create Note" class="btn btn-default btn-primary"/>
+            </div>
+        </form>
+    </div>
+</div>

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.Differencing;
+using noter.Common;
 //using Microsoft.EntityFrameworkCore;
 using noter.Entities;
 using noter.Services;
@@ -25,8 +26,8 @@ namespace noter.Controllers
         // GET: NoteManager
         public async Task<IActionResult> Index()
         {
-            var list = await _noteManager.ListNotes();
-            return View(list);
+            ViewBag.SubViewName = "Index";            
+            return View("Maintenance", await GetEditNoteVmAsync(null));
         }
 
         // GET: NoteManager/Details/5
@@ -47,34 +48,34 @@ namespace noter.Controllers
         // GET: NoteManager/Create
         public IActionResult Create()
         {
-            var vv = View();
-            return vv;
+            var sv = GetEditNoteVmAsync(null).Result;
+            ViewBag.SubViewName = "Edit";
+            return View("Maintenance", sv);
         }
 
-        // POST: NoteManager/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Payload")] Note note)
-        {
-            if (ModelState.IsValid)
-            {
-                await _noteManager.AddNote(note);
-                return RedirectToAction(nameof(Index));
-            }
-            return View(note);
-        }
 
-        // GET: NoteManager/Edit/5
+        // GET: NoteManager/Edit/5 or NoteManager/Edit?id=-1
+        /// <summary>
+        /// handles create and edit requests
+        /// </summary>
+        /// <param name="id">-1 == the note is being created, >0 an existing not is being edited</param>
+        /// <returns>The multipurpose maintenance view with the "Edit" sub-view
+        /// set in ViewBag.SubViewName</returns>
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            
-            var note = await _noteManager.GetNoteById(id.Value);
+            Note note;
+            if (id == Constants.NewEntityId)
+            {
+                note = new Note();
+            }
+            else
+            {
+                note = await _noteManager.GetNoteById(id.Value);
+            }
             if (note == null)
             {
                 return NotFound();
@@ -97,8 +98,8 @@ namespace noter.Controllers
 
             if (ModelState.IsValid)
             {
-                IEnumerable<long> tagIds = vm.SelectableTags.Where(st => st.Included).Select(st => st.Id);
-                UpdateResult result = await _noteManager.UpdateNote(vm.Note, tagIds);
+                IEnumerable<SelectableTag> selectableTags = vm.SelectableTags;
+                UpdateResult result = await _noteManager.UpdateNote(vm.Note, selectableTags);
                 switch (result)
                 {
                     case UpdateResult.Success:
@@ -110,6 +111,7 @@ namespace noter.Controllers
                         throw new Exception("Another user has edited this record.  Please try again");
                 }
             }
+            ViewBag.SubViewName = "Edit";
             return View(vm);
         }
 
@@ -166,14 +168,33 @@ namespace noter.Controllers
             return _noteManager.NoteExists(id);
         }
 
-        private async Task<EditNoteVM> GetEditNoteVmAsync(Note note)
+        /// <summary>
+        /// creates a model view comprising a note and all the tags 
+        /// </summary>
+        /// <param name="noteArg">a new or existing note or null (in which case a note will be created</param>
+        /// <returns>a view model which contains a note to be edited, all the tags with an indication 
+        /// whether each tag is associated with the note</returns>
+        private async Task<EditNoteVM> GetEditNoteVmAsync(Note noteArg)
         {
-            HashSet<long> tagIds = note.NoteTags.Select(nt => nt.TagId).ToHashSet();
+            Note note;
+            List<SelectableTag> tagParts;
+            HashSet<long> tagIds;
+            if (noteArg == null)
+            {
+                note = new Note{ NoteTags = new List<NoteTag>()};
+                tagIds = new HashSet<long>();
+            }
+            else
+            {
+                note = noteArg;
+                tagIds = note.NoteTags.Select(nt => nt.TagId).ToHashSet();
+            }
             var list = await _tagService.ListAll();
-            var tagParts =  list.Select(t => 
+            tagParts =  list.Select(t => 
                     new SelectableTag {Id = t.Id, Name =  t.Name, ShortDescription = t.ShortDescription
                         , Included = tagIds.Contains(t.Id)})
                 .ToList();
+                    
             return new EditNoteVM { Note = note, SelectableTags = tagParts};
         }
     }

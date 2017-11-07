@@ -7,7 +7,9 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using noter.Data;
 using noter.Entities;
 using Microsoft.Extensions.Logging;
+using noter.ViewModel;
 using static noter.Common.Utils;
+using noter.Common;
 
 namespace noter.Services
 {
@@ -17,23 +19,25 @@ namespace noter.Services
         Task<IList<Note>> ListNotes();
         Task<Note> GetDetails(long? id);
         Task<int> AddNote(Note note);
-        Task<UpdateResult> UpdateNote(Note note, IEnumerable<long> tagIds);
+        Task<UpdateResult> UpdateNote(Note note, IEnumerable<SelectableTag> tagIds);
         Task<int> DeleteNote(long id);
         Task<Note> GetNoteById(long id);
         bool NoteExists(long id);
         Task<int> AddComment(Note vmNote);
     }
+
     public class NoteManager : INoteManager
     {
         private NoteDbContext _context;
         private ILogger<NoteManager> _logger;
-        
+
         public NoteManager(NoteDbContext dbContext, ILogger<NoteManager> logger)
         {
             this._logger = logger;
             this._context = dbContext;
             _logger.LogInformation(1, "created NoteManager");
         }
+
         public async Task<IList<Note>> ListNotes()
         {
             var list = await _context.Note.ToListAsync();
@@ -46,6 +50,7 @@ namespace noter.Services
             var ll = _context.Note.ToList();
             return note;
         }
+
         public async Task<Note> GetDetails(long? id)
         {
             var note = await _context.Note
@@ -60,48 +65,35 @@ namespace noter.Services
             _logger.LogDebug(1234, "about to write NoteTag");
             var nt = new NoteTag {NoteId = note.Id, TagId = 2};
             _context.Add(nt);
-            int x =await _context.SaveChangesAsync();
+            int x = await _context.SaveChangesAsync();
 //            x =await _context.SaveChangesAsync();
             return x;
         }
-        public async Task<UpdateResult> UpdateNote(Note note, IEnumerable<long> tagIds)
+
+        public async Task<UpdateResult> UpdateNote(Note note, IEnumerable<SelectableTag> selectableTags)
         {
-//            Assert(note.NoteTags != null);
             if (note.NoteTags == null)
             {
                 note.NoteTags = new List<NoteTag>();
             }
             try
             {
-                HashSet<long> tagIdSet = tagIds.ToHashSet();
-
                 _context.Database.ExecuteSqlCommand("delete from NoteTag where Noteid = {0}", note.Id);
-                
-                foreach (NoteTag nt in note.NoteTags)
+
+                if (note.Id == Constants.NewEntityId)
                 {
-                    if (tagIdSet.Contains(nt.TagId))
-                    {
-                        tagIdSet.Remove(nt.TagId);
-                    }
-                    else  // the existing note has a tag that was not passed in
-                    {
-                        note.NoteTags.Remove(nt);
-                    }
+                    _context.Add(note);
                 }
-                foreach (long newId in tagIdSet)
+                else
                 {
-                    note.NoteTags.Add(new NoteTag {NoteId = note.Id, TagId = newId});
+                    _context.Update(note);
                 }
-                _context.Update(note);
+                IncludeSelectedTagsInNote(note, selectableTags);
+                foreach (NoteTag ntt in note.NoteTags)
+                {
+                    _context.NoteTag.Add(ntt);
+                }
                 int x = await _context.SaveChangesAsync();
-                foreach (NoteTag nnt in note.NoteTags)
-                {
-                    if (!_context.NoteTag.Any(n => n.NoteId == nnt.NoteId && n.TagId == nnt.TagId))
-                    {
-                        _context.NoteTag.Add(nnt);
-                    }
-                }
-                x = await _context.SaveChangesAsync();
                 return UpdateResult.Success;
             }
             catch (DbUpdateConcurrencyException)
@@ -117,7 +109,18 @@ namespace noter.Services
             }
         }
 
-        public async Task<int> DeleteNote(long id)
+        private void IncludeSelectedTagsInNote(Note note, IEnumerable<SelectableTag> selectableTags)
+        {
+            HashSet<long> tagIdSetToInclude = selectableTags.Where(st => st.Included).Select(st => st.Id).ToHashSet();
+            note.NoteTags.Clear();
+            foreach (long selectedTagId in tagIdSetToInclude)
+            {
+                note.NoteTags.Add(new NoteTag {NoteId = note.Id, TagId = selectedTagId});
+            }
+            
+        }
+
+    public async Task<int> DeleteNote(long id)
         {
             try
             {
