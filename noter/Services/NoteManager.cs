@@ -58,7 +58,8 @@ namespace noter.Services
             return note;
         }
 
-        public async Task<UpdateResult> UpdateNote(Note note, IEnumerable<SelectableTag> selectableTags, IEnumerable<Comment> comments)
+        public async Task<UpdateResult> UpdateNote(Note note, IEnumerable<SelectableTag> selectableTags
+          , IEnumerable<Comment> comments)
         {
             if (note.NoteTags == null)
             {

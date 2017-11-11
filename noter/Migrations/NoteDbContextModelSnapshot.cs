@@ -55,8 +55,6 @@ namespace noter.Migrations
 
                     b.Property<string>("Payload");
 
-                    b.Property<long?>("TagId");
-
                     b.Property<long?>("UserId");
 
                     b.HasKey("Id");
