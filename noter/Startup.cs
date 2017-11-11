@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using noter.Common;
 using noter.Data;
-using noter.Models;
 using noter.Services;
+using static noter.Common.Utils;
 
 namespace noter
 {
@@ -28,9 +24,9 @@ namespace noter
         public void ConfigureServices(IServiceCollection services)
         {
 //            services.AddDbContext<ApplicationDbContext>(options =>
-//                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+//                options.UseSqlServer(GetIdentityConnectionString()));
             services.AddDbContext<NoteDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("NoteConnection")));
+                options.UseSqlServer(GetNoteConnetionString()));
 //            services.AddIdentity<ApplicationUser, IdentityRole>()
 //                .AddEntityFrameworkStores<ApplicationDbContext>()
 //                .AddDefaultTokenProviders();
@@ -66,6 +62,22 @@ namespace noter
                     name: "default",
                     template: "{controller=NoteManager}/{action=Index}/{id?}");
             });
+        }
+
+        private string GetNoteConnetionString() => GetConnetionString("Note");
+        private string GetIdentityConnetionString() => GetConnetionString("Identity");
+        private string GetConnetionString(string prefix)
+        {
+            var osNames = new Dictionary<OS, string>
+            {
+                {OS.Linux, "Linux"}
+                ,{OS.MacOS, "MacOs"}
+                ,{OS.Windows, "Windows"}
+            };
+            OS os = new OSDetector().DetectOS();
+            Assert(osNames.ContainsKey(os));
+            return Configuration.GetConnectionString($"{osNames[os]}-{prefix}Connection");
+                    // e.g. ...GetconnectionString("Linux-NoteConnedtion");
         }
     }
 }
