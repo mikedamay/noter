@@ -9,19 +9,19 @@ namespace noter.Common
         
     }
 
-    internal class OSDetector
+    internal class OsDetector
     {
         // TODO use System.Runtime.InteropServices.RuntimeInformation.Platform when the position
         // is clear
-        public OS DetectOS()
+        public Os DetectOs()
         {
             // https://stackoverflow.com/questions/38790802/determine-operating-system-in-net-core
             // thanks to: https://stackoverflow.com/users/3325704/jariq with amendments by me
-            OS os;
+            Os os;
             string windir = Environment.GetEnvironmentVariable("windir");
             if (!string.IsNullOrEmpty(windir) && windir.Contains(@"\") && Directory.Exists(windir))
             {
-                os = OS.Windows;
+                os = Os.Windows;
             }
             else if (File.Exists(@"/proc/sys/kernel/ostype"))
             {
@@ -29,7 +29,7 @@ namespace noter.Common
                 if (osType.StartsWith("Linux", StringComparison.OrdinalIgnoreCase))
                 {
                     // Note: Android gets here too
-                    os = OS.Linux;
+                    os = Os.Linux;
                 }
                 else
                 {
@@ -39,7 +39,7 @@ namespace noter.Common
             else if (File.Exists(@"/System/Library/CoreServices/SystemVersion.plist"))
             {
                 // Note: iOS gets here too
-                os = OS.MacOS;
+                os = Os.MacOS;
             }
             else
             {
@@ -52,7 +52,7 @@ namespace noter.Common
 
 namespace noter.Common
 {
-    public enum OS
+    public enum Os
     {
         /// <summary>
         /// Beans typically have an OS of OS.Any
