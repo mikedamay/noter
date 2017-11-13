@@ -68,13 +68,13 @@ namespace noter
         private string GetIdentityConnetionString() => GetConnetionString("Identity");
         private string GetConnetionString(string prefix)
         {
-            var osNames = new Dictionary<OS, string>
+            var osNames = new Dictionary<Os, string>
             {
-                {OS.Linux, "Linux"}
-                ,{OS.MacOS, "MacOs"}
-                ,{OS.Windows, "Windows"}
+                {Os.Linux, "Linux"}
+                ,{Os.MacOS, "MacOs"}
+                ,{Os.Windows, "Windows"}
             };
-            OS os = new OSDetector().DetectOS();
+            Os os = new OsDetector().DetectOs();
             Assert(osNames.ContainsKey(os));
             return Configuration.GetConnectionString($"{osNames[os]}-{prefix}Connection");
                     // e.g. ...GetconnectionString("Linux-NoteConnedtion");
