@@ -16,4 +16,4 @@
 14. Ajaxify note maintenance page
 15. Show active note in note list
 16. Add Footer
-
+17. Page for adding tags
