@@ -9,7 +9,7 @@ namespace noter.Entities
     {
         public long Id { get; set; }
         [Required]
-        [MaxLength(20)]
+        [MaxLength(10)]
         public string Name { get; set; }
         [Required]
         [MaxLength(80)]

@@ -14,6 +14,27 @@
 
 <h2>Tags</h2>
 
+
+<ul class="list-inline">
+    @{
+        int ii = 0;
+        foreach (var st in Model)
+        {
+            <li>
+                <input asp-for="@st.Id" type="hidden" name = "@GetTagControlName(ii, nameof(st.Id))"/>
+                <div class="checkbox">
+                    <label><input asp-for="@st.Included" type="checkbox" name="@GetTagControlName(ii, nameof(st.Included))"/>@st.Name</label>
+                </div>
+                <input asp-for="@st.Name" type="hidden" name="@GetTagControlName(ii, nameof(st.Name))"/>
+                <input asp-for="@st.ShortDescription" type="hidden" name="@GetTagControlName(ii, nameof(st.ShortDescription))"/>
+            </li>
+            ii++;
+        }
+    }
+</ul>
+
+
+@*
 <table class="table">
     <thead>
     <tr>
@@ -31,24 +52,21 @@
     <tbody>
     @{
         int ii = 0;
-        foreach (var mi in Model)
+        foreach (var st in Model)
         {
             <tr>
                 <td>
-                    <input asp-for="@mi.Id" type="hidden" name = "@GetTagControlName(ii, nameof(mi.Id))"/>
-                    <input asp-for="@mi.Included" type="checkbox" name="@GetTagControlName(ii, nameof(mi.Included))"/>
+                    <input asp-for="@st.Id" type="hidden" name = "@GetTagControlName(ii, nameof(st.Id))"/>
+                    <div class="checkbox">
+                        <label><input asp-for="@st.Included" type="checkbox" name="@GetTagControlName(ii, nameof(st.Included))"/>@st.Name</label>
+                    </div>
                 </td>
-                <td>
-                    @Html.DisplayFor(m => mi.Name)
-                    <input asp-for="@mi.Name" type="hidden" name="@GetTagControlName(ii, nameof(mi.Name))"/>
-                </td>
-                <td>
-                    @Html.DisplayFor(m => mi.ShortDescription)
-                    <input asp-for="@mi.ShortDescription" type="hidden" name="@GetTagControlName(ii, nameof(mi.ShortDescription))"/>
-                </td>
+                <input asp-for="@st.Name" type="hidden" name="@GetTagControlName(ii, nameof(st.Name))"/>
+                <input asp-for="@st.ShortDescription" type="hidden" name="@GetTagControlName(ii, nameof(st.ShortDescription))"/>
             </tr>
             ii++;
         }
     }
     </tbody>
 </table>
+*@
