@@ -1,6 +1,6 @@
 # Outstanding Tasks
 
-1. Configure for windows automatically
+1. DONE Configure for windows automatically
 2. Inline tags similar to SO.
 3. Make note text a text area taking 6 cols of width and 75% of heigh
 4. Make note text a blob.
