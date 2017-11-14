@@ -12,9 +12,6 @@
 
 }
 
-<h2>Tags</h2>
-
-
 <ul class="list-inline">
     @{
         int ii = 0;
@@ -32,41 +29,3 @@
         }
     }
 </ul>
-
-
-@*
-<table class="table">
-    <thead>
-    <tr>
-        <td>
-            
-        </td>
-        <td>
-            @Html.DisplayNameFor(m => m[0].Name)
-        </td>
-        <td>
-            @Html.DisplayNameFor(m => m[0].ShortDescription)
-        </td>
-    </tr>
-    </thead>
-    <tbody>
-    @{
-        int ii = 0;
-        foreach (var st in Model)
-        {
-            <tr>
-                <td>
-                    <input asp-for="@st.Id" type="hidden" name = "@GetTagControlName(ii, nameof(st.Id))"/>
-                    <div class="checkbox">
-                        <label><input asp-for="@st.Included" type="checkbox" name="@GetTagControlName(ii, nameof(st.Included))"/>@st.Name</label>
-                    </div>
-                </td>
-                <input asp-for="@st.Name" type="hidden" name="@GetTagControlName(ii, nameof(st.Name))"/>
-                <input asp-for="@st.ShortDescription" type="hidden" name="@GetTagControlName(ii, nameof(st.ShortDescription))"/>
-            </tr>
-            ii++;
-        }
-    }
-    </tbody>
-</table>
-*@
