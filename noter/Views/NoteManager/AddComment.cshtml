@@ -24,6 +24,9 @@
                     <div class="form-group">
                         <label asp-for="@comment.Payload" class="control-label"></label>
                         <textarea asp-for="@comment.Payload" class="form-control" name="@GetFullPropertyyName(ii, nameof(comment.Payload))"></textarea>
+                            <button class="btn btn-sm" type="submit" asp-action="Edit" name="submit" value="Delete" asp-route-id="@comment.Id" aria-label="Delete">
+                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                            </button>
                         <span asp-validation-for="@comment.Payload" class="text-danger"></span>
                     </div>
                     ii++;
