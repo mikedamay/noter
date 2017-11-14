@@ -19,6 +19,11 @@ namespace noter.Controllers
         private INoteManager _noteManager;
         private TagService _tagService;
 
+        private static class MyConstants
+        {
+            public static string AddCommentAction = "Add Comment";
+        }
+
         public NoteManagerController( INoteManager noteManager, TagService tagService)
         {
             this._noteManager = noteManager;
@@ -36,10 +41,9 @@ namespace noter.Controllers
         public IActionResult Create()
         {
             var sv = GetEditNoteVmAsync(null).Result;
-            ViewBag.SubViewName = "Edit";
+            AddEditSubViewsToViewBag(ViewBag);
             return View("Maintenance", sv);
         }
-
 
         // GET: NoteManager/Edit/5 or NoteManager/Edit?id=-1
         /// <summary>
@@ -67,7 +71,7 @@ namespace noter.Controllers
             {
                 return NotFound();
             }
-            AddSubViewsToViewBag(ViewBag);
+            AddEditSubViewsToViewBag(ViewBag);
             return View("Maintenance", await GetEditNoteVmAsync(note));
         }
 
@@ -76,10 +80,18 @@ namespace noter.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, EditNoteVM vm)
+        public async Task<IActionResult> Edit(long id, string submit, EditNoteVM vm)
         {
+            if (id != vm.Note.Id)
+            {
+                return NotFound();
+            }   
             if (ModelState.IsValid)
             {
+                if (submit == MyConstants.AddCommentAction)
+                {
+                    return AddCommentTextBox(vm);
+                }
                 IEnumerable<SelectableTag> selectableTags = vm.SelectableTags;
                 UpdateResult result = await _noteManager.UpdateNote(vm.Note
                   ,selectableTags ?? new List<SelectableTag>()
@@ -94,7 +106,7 @@ namespace noter.Controllers
                         throw new Exception("Another user has edited this record.  Please try again");
                 }
             }
-            ViewBag.SubViewName = "Edit";
+            AddEditSubViewsToViewBag(ViewBag);
             return View(vm);
         }
 
@@ -141,7 +153,7 @@ namespace noter.Controllers
             List<Comment> comments = vm.Comments ?? new List<Comment>();  
             comments.Add(new Comment());
             vm.Comments = comments;
-            AddSubViewsToViewBag(ViewBag);
+            AddEditSubViewsToViewBag(ViewBag);
             return View("Maintenance", vm);
         }
         private bool NoteExists(long id)
@@ -178,9 +190,10 @@ namespace noter.Controllers
                     
             return new EditNoteVM { Note = note, SelectableTags = tagParts, Comments = note.Comments.ToList()};
         }
-        private void AddSubViewsToViewBag(object viewBag)
+        private void AddEditSubViewsToViewBag(object viewBag)
         {
             ViewBag.SubViewName = "Edit";
+            ViewBag.AddCommentAction = MyConstants.AddCommentAction;
         }
 
     }
