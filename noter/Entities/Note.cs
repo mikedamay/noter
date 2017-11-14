@@ -1,11 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.WindowsAzure.Storage.Blob.Protocol;
 
 namespace noter.Entities
 {
     public class Note
     {
         public long Id { get; set; }
+        [MaxLength(80)]
+        [Required]
+        public string Title { get; set; }
         [DisplayName("Note Text")]
         public string Payload { get; set; }
         public List<NoteTag> NoteTags { get; set; }

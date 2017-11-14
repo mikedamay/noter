@@ -30,21 +30,6 @@ namespace noter.Controllers
             return View("Maintenance", await GetEditNoteVmAsync(null));
         }
 
-        // GET: NoteManager/Details/5
-        public async Task<IActionResult> Details(long? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            Note note = await _noteManager.GetDetails(id);
-            if (note == null)
-            {
-                return NotFound();
-            }
-            return View(note);
-        }
-
         // GET: NoteManager/Create
         public IActionResult Create()
         {
@@ -105,7 +90,6 @@ namespace noter.Controllers
                 switch (result)
                 {
                     case UpdateResult.Success:
-//                        return View(new EditNoteVM {Note = vm.Note, SelectableTags = vm.SelectableTags});
                         return RedirectToAction(nameof(Index));
                     case UpdateResult.NoteAlreadyDeleted:
                         return NotFound();

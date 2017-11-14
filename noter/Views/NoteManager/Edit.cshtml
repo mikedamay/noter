@@ -6,16 +6,20 @@
     ViewBag.CommentListName = nameof(Model.Comments);
 }
 
-<h4>Note</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-8">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Note.Id" />
             <div class="form-group">
+                <label asp-for="Note.Title" class="control-label" ></label>
+                <input asp-for="Note.Title" type="text" class="form-control"/>
+                <span asp-validation-for="Note.Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Note.Payload" class="control-label"></label>
-                <input asp-for="Note.Payload" class="form-control" />
+                <textarea asp-for="Note.Payload" class="form-control" style="height: 400px"></textarea>
                 <span asp-validation-for="Note.Payload" class="text-danger"></span>
             </div>
             @Html.Partial("~/Views/Tag/Select.cshtml", Model.SelectableTags)

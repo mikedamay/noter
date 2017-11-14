@@ -1,4 +1,23 @@
-﻿@model System.Collections.Generic.IEnumerable<noter.Entities.Note>
+﻿@using System.Reflection.Metadata.Ecma335
+@model System.Collections.Generic.IEnumerable<noter.Entities.Note>
+
+@functions
+{
+
+    string ElideTitle(string title)
+    {
+        const int maxLen = 30;
+        if (title.Length > maxLen)
+        {
+            return title.Substring(0, maxLen - 3) + "...";
+        }
+        else
+        {
+            return title;
+        }
+    }
+
+}
 
 
 <div>
@@ -13,7 +32,7 @@
     <thead>
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Payload)
+            @Html.DisplayNameFor(model => model.Title)
         </th>
         <th></th>
     </tr>
@@ -22,7 +41,7 @@
     @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Payload)
+                @ElideTitle(item.Title)
             </td>
             <td>
                 <a class="btn btn-sm" asp-action="Edit" asp-controller="NoteManager" asp-route-id="@item.Id" aria-label="Edit">
