@@ -6,20 +6,12 @@
 }
 
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Edit</title>
-</head>
-<body>
-
 <p>View is: @ViewBag.SubViewName</p>
 
 <h2>@ViewBag.Title</h2>
 
 @Html.Partial((string)ViewBag.SubViewName, Model)
+        @*subview name is Edit or Delete or possibly something else*@
 
 <div class="row">
     <a class="btn" asp-action="Index">Back to List</a>
@@ -31,6 +23,3 @@
     await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
-
-</body>
-</html>

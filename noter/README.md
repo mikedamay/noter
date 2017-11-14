@@ -17,6 +17,6 @@
 15. Show active note in note list
 16. Add Footer
 17. Page for adding tags
-18. Title for note required
+DONE 18. Title for note required
 19. Add placeholder text for title and payload
 20. Add explicit bindings to NoteManager/Edit

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.Differencing;
 using noter.Common;
@@ -9,6 +10,7 @@ using noter.Common;
 using noter.Entities;
 using noter.Services;
 using noter.ViewModel;
+using static noter.Common.Utils;
 
 namespace noter.Controllers
 {
@@ -65,7 +67,7 @@ namespace noter.Controllers
             {
                 return NotFound();
             }
-            ViewBag.SubViewName = "Edit";
+            AddSubViewsToViewBag(ViewBag);
             return View("Maintenance", await GetEditNoteVmAsync(note));
         }
 
@@ -76,11 +78,6 @@ namespace noter.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(long id, EditNoteVM vm)
         {
-            if (id != vm.Note.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 IEnumerable<SelectableTag> selectableTags = vm.SelectableTags;
@@ -139,15 +136,13 @@ namespace noter.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddComment(NoteAndCommentVM vm)
+        public IActionResult AddCommentTextBox(EditNoteVM vm)
         {
-            if (ModelState.IsValid)
-            {
-                vm.Note.Comments.Add(vm.Comment);
-                await _noteManager.AddComment(vm.Note);
-                return RedirectToAction(nameof(Index));
-            }
-            return View(vm);
+            List<Comment> comments = vm.Comments ?? new List<Comment>();  
+            comments.Add(new Comment());
+            vm.Comments = comments;
+            AddSubViewsToViewBag(ViewBag);
+            return View("Maintenance", vm);
         }
         private bool NoteExists(long id)
         {
@@ -183,6 +178,11 @@ namespace noter.Controllers
                     
             return new EditNoteVM { Note = note, SelectableTags = tagParts, Comments = note.Comments.ToList()};
         }
+        private void AddSubViewsToViewBag(object viewBag)
+        {
+            ViewBag.SubViewName = "Edit";
+        }
+
     }
 }
 
