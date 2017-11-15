@@ -9,33 +9,37 @@
     {
         return $"{ViewBag.CommentListName}[{index}].{propertyName}";
     }
-    
-
 }
-    <div class="col-md-12" style="background-color: #00bfff">
-        <div>
-            <h4>Comments</h4>
-        </div>
-        <div>
-            @{
-                int ii = 0;
-                foreach (noter.Entities.Comment comment in Model)
-                {
-                    <div class="form-group">
-                        <label asp-for="@comment.Payload" class="control-label"></label>
+<div class="col-md-12">
+    <div>
+        <h4>Comments</h4>
+    </div>
+    <div>
+        @{
+            int ii = 0;
+            foreach (noter.Entities.Comment comment in Model)
+            {
+                <div class="row" display:flex; align-items: center">
+                    <input type="hidden" name="@GetFullPropertyyName(ii, nameof(comment.Id))" value="@comment.Id" aria-hidden="True"/>
+                    <div class="form-group col-md-11">
+@*                        <label asp-for="@comment.Payload" class="control-label"></label>*@
                         <textarea asp-for="@comment.Payload" class="form-control" name="@GetFullPropertyyName(ii, nameof(comment.Payload))"></textarea>
-                            <button class="btn btn-sm" type="submit" asp-action="Edit" name="submit" value="Delete" asp-route-id="@comment.Id" aria-label="Delete">
-                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                            </button>
+                    </div>
+                    <div class="form-group col-md-1 vertical-align">
+                        <button class="btn btn-sm" type="submit" formaction="?commentId=@comment.Id"
+                                formmethod="post" name="submit" value="@ViewBag.DeleteAction" aria-label="Delete comment">
+                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                        </button>
                         <span asp-validation-for="@comment.Payload" class="text-danger"></span>
                     </div>
-                    ii++;
-                }
+                </div>
+                ii++;
             }
-            <div class="form-group">
-                <input type="submit" name="submit" asp-controller="NoteManager" 
-                   asp-action="Edit" class="btn btn-default btn-primary" value="@ViewBag.AddCommentAction"/>
-            </div>
+        }
+        <div class="form-group">
+            <input type="submit" name="submit" asp-controller="NoteManager" 
+               asp-action="Edit" class="btn btn-default btn-primary" value="@ViewBag.AddCommentAction"/>
         </div>
     </div>
+</div>
 

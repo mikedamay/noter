@@ -73,7 +73,7 @@ namespace noter.Services
                 _context.Database.ExecuteSqlCommand("delete from NoteTag where Noteid = {0}", note.Id);
                 _context.Database.ExecuteSqlCommand("delete from Comments where Noteid = {0}", note.Id);
 
-                if (note.Id == Constants.NewEntityId)
+                if (IsNewNote(note))
                 {
                     _context.Add(note);
                 }
@@ -81,22 +81,17 @@ namespace noter.Services
                 {
                     _context.Update(note);
                 }
-                note.Comments.Clear();
-                foreach (var cmt in comments)
-                {
-                    if (!string.IsNullOrWhiteSpace(cmt.Payload))
-                    {
-                        note.Comments.Add(cmt);
-                    }
-                }
                 IncludeSelectedTagsInNote(note, selectableTags);
                 foreach (NoteTag ntt in note.NoteTags)
                 {
                     _context.NoteTag.Add(ntt);
                 }
-                foreach (var c in note.Comments)
+                note.Comments.Clear();
+                foreach (var cmt in comments)
                 {
-                    _context.CommentSet.Add(c);
+                    Comment newComment = new Comment{Payload = cmt.Payload};
+                    note.Comments.Add(newComment);
+                    _context.CommentSet.Add(newComment );
                 }
                 int x = await _context.SaveChangesAsync();
                 return UpdateResult.Success;
@@ -113,6 +108,8 @@ namespace noter.Services
                 }
             }
         }
+
+        private bool IsNewNote(Note note) => note.Id == Constants.NewEntityId;
 
         private void IncludeSelectedTagsInNote(Note note, IEnumerable<SelectableTag> selectableTags)
         {

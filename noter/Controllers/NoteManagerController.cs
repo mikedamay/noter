@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
@@ -8,6 +9,7 @@ using Microsoft.CodeAnalysis.Differencing;
 using noter.Common;
 //using Microsoft.EntityFrameworkCore;
 using noter.Entities;
+using noter.Migrations;
 using noter.Services;
 using noter.ViewModel;
 using static noter.Common.Utils;
@@ -21,7 +23,10 @@ namespace noter.Controllers
 
         private static class MyConstants
         {
-            public static string AddCommentAction = "Add Comment";
+            public const string AddCommentAction = "Add Comment";
+            public const string SaveAction = "Save";
+            public const string DeleteAction = "Delete";
+            
         }
 
         public NoteManagerController( INoteManager noteManager, TagService tagService)
@@ -80,7 +85,7 @@ namespace noter.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, string submit, EditNoteVM vm)
+        public async Task<IActionResult> Edit(long id, long commentId, string submit, EditNoteVM vm)
         {
             if (id != vm.Note.Id)
             {
@@ -88,26 +93,36 @@ namespace noter.Controllers
             }   
             if (ModelState.IsValid)
             {
-                if (submit == MyConstants.AddCommentAction)
+                switch (submit)
                 {
-                    return AddCommentTextBox(vm);
-                }
-                IEnumerable<SelectableTag> selectableTags = vm.SelectableTags;
-                UpdateResult result = await _noteManager.UpdateNote(vm.Note
-                  ,selectableTags ?? new List<SelectableTag>()
-                  ,vm.Comments ?? new List<Comment>());
-                switch (result)
-                {
-                    case UpdateResult.Success:
-                        return RedirectToAction(nameof(Index));
-                    case UpdateResult.NoteAlreadyDeleted:
-                        return NotFound();
-                    case UpdateResult.ConcurrencyConflict:
-                        throw new Exception("Another user has edited this record.  Please try again");
+                    case MyConstants.AddCommentAction:
+                        return AddCommentTextBox(vm);
+                    case MyConstants.SaveAction:
+                        return await UpdateNote(vm);
+                    case MyConstants.DeleteAction:
+                        return DeleteComment(vm, commentId);
                 }
             }
             AddEditSubViewsToViewBag(ViewBag);
             return View(vm);
+        }
+
+        private async Task<IActionResult> UpdateNote(EditNoteVM vm)
+        {
+            IEnumerable<SelectableTag> selectableTags = vm.SelectableTags;
+            UpdateResult result = await _noteManager.UpdateNote(vm.Note
+                , selectableTags ?? new List<SelectableTag>()
+                , vm.Comments ?? new List<Comment>());
+            switch (result)
+            {
+                case UpdateResult.Success:
+                    return RedirectToAction(nameof(Index));
+                case UpdateResult.NoteAlreadyDeleted:
+                    return NotFound();
+                default:
+                // case UpdateResult.ConcurrencyConflict:
+                    throw new Exception("Another user has edited this record.  Please try again");
+            }
         }
 
         // GET: NoteManager/Delete/5
@@ -150,12 +165,34 @@ namespace noter.Controllers
         [HttpPost]
         public IActionResult AddCommentTextBox(EditNoteVM vm)
         {
-            List<Comment> comments = vm.Comments ?? new List<Comment>();  
-            comments.Add(new Comment());
+            List<Comment> comments = vm.Comments ?? new List<Comment>();
+            var comment = new Comment();
+            comment.Id = GetTempCommentId(comments);
+            comments.Add(comment);
             vm.Comments = comments;
             AddEditSubViewsToViewBag(ViewBag);
             return View("Maintenance", vm);
         }
+        private IActionResult DeleteComment(EditNoteVM vm, long commentId)
+        {
+            Assert(vm.Comments != null);
+            var newComments = vm.Comments.Where(c => c.Id != commentId).ToList();
+            vm.Comments = newComments;
+            AddEditSubViewsToViewBag(ViewBag);
+            return View("Maintenance", vm);
+        }
+
+        /// <summary>
+        /// returns a negative number being unique (the max + 1) within the comments collection
+        /// </summary>
+        /// <param name="comments">a list of comments beloning to a note, some persisted, others not</param>
+        /// <returns>e.g. -1</returns>
+        private long GetTempCommentId(List<Comment> comments)
+        {
+            long largestId = comments.Count > 0 ? comments.Max(c => c.Id) : 0;
+            return -(largestId + 1);
+        }
+
         private bool NoteExists(long id)
         {
             return _noteManager.NoteExists(id);
@@ -194,6 +231,8 @@ namespace noter.Controllers
         {
             ViewBag.SubViewName = "Edit";
             ViewBag.AddCommentAction = MyConstants.AddCommentAction;
+            ViewBag.SaveAction = MyConstants.SaveAction;
+            ViewBag.DeleteAction = MyConstants.DeleteAction;
         }
 
     }
