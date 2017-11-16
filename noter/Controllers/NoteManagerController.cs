@@ -25,7 +25,7 @@ namespace noter.Controllers
         {
             public const string AddCommentAction = "Add Comment";
             public const string SaveAction = "Save";
-            public const string DeleteAction = "Delete";
+            public const string DeleteCommentAction = "Delete";
             
         }
 
@@ -96,10 +96,13 @@ namespace noter.Controllers
                 switch (submit)
                 {
                     case MyConstants.AddCommentAction:
+                        Assert(commentId == 0);
                         return AddCommentTextBox(vm);
                     case MyConstants.SaveAction:
+                        Assert(commentId == 0);
                         return await UpdateNote(vm);
-                    case MyConstants.DeleteAction:
+                    case MyConstants.DeleteCommentAction:
+                        Assert(commentId != 0);
                         return DeleteComment(vm, commentId);
                 }
             }
@@ -232,7 +235,7 @@ namespace noter.Controllers
             ViewBag.SubViewName = "Edit";
             ViewBag.AddCommentAction = MyConstants.AddCommentAction;
             ViewBag.SaveAction = MyConstants.SaveAction;
-            ViewBag.DeleteAction = MyConstants.DeleteAction;
+            ViewBag.DeleteAction = MyConstants.DeleteCommentAction;
         }
 
     }

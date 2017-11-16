@@ -6,7 +6,7 @@
 4. N/A Make note text a blob. - not clear whether supported on Linux
 5. DONE Remove Checker
 6. DONE Enable Comment addition
-7. Enable comment deletion
+7. DONE Enable comment deletion
 8. Scroll note list
 9. Add back authentication
 10. Add timestamp and user id to note
