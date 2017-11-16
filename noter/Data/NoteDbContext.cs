@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using noter.Entities;
+using noter.Common;
 
 namespace noter.Data
 {
@@ -21,6 +22,10 @@ namespace noter.Data
             mb.Entity<NoteTag>().HasKey(nt => new {nt.NoteId, nt.TagId});
             mb.Entity<NoteTag>().HasOne(nt => nt.Note).WithMany(n => n.NoteTags).HasForeignKey(nt => nt.NoteId);
             mb.Entity<NoteTag>().HasOne(nt => nt.Tag).WithMany(t => t.NoteTags).HasForeignKey(nt => nt.TagId);
+            mb.Entity<Note>().Property<DateTime>(Constants.LastUpdated);
+            mb.Entity<Tag>().Property<DateTime>(Constants.LastUpdated);
+            mb.Entity<Comment>().Property<DateTime>(Constants.LastUpdated);
+            mb.Entity<NoteTag>().Property<DateTime>(Constants.LastUpdated);
         }
 
         public DbSet<noter.Entities.Note> Note { get; set; }

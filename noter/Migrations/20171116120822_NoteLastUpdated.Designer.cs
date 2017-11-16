@@ -11,9 +11,10 @@ using System;
 namespace noter.Migrations
 {
     [DbContext(typeof(NoteDbContext))]
-    partial class NoteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20171116120822_NoteLastUpdated")]
+    partial class NoteLastUpdated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,8 +37,6 @@ namespace noter.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("LastUpdated");
 
                     b.Property<long?>("NoteId");
 
@@ -78,8 +77,6 @@ namespace noter.Migrations
 
                     b.Property<long>("TagId");
 
-                    b.Property<DateTime>("LastUpdated");
-
                     b.HasKey("NoteId", "TagId");
 
                     b.HasIndex("TagId");
@@ -94,8 +91,6 @@ namespace noter.Migrations
 
                     b.Property<string>("Details")
                         .IsRequired();
-
-                    b.Property<DateTime>("LastUpdated");
 
                     b.Property<string>("Name")
                         .IsRequired()

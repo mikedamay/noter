@@ -7,7 +7,7 @@
 5. DONE Remove Checker
 6. DONE Enable Comment addition
 7. DONE Enable comment deletion
-8. Scroll note list
+8. DONE Scroll note list
 9. Add back authentication
 10. Add timestamp and user id to note
 11. Add timestamp and user id to comment

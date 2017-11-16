@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
@@ -62,6 +63,7 @@ namespace noter.Services
           ,IEnumerable<SelectableTag> selectableTags
           ,IEnumerable<Comment> comments)
         {
+            var now = DateTime.Now;
             Assert(selectableTags != null);
             Assert(comments != null);
             if (note.NoteTags == null)
@@ -81,10 +83,12 @@ namespace noter.Services
                 {
                     _context.Update(note);
                 }
+                _context.Entry(note).Property(Constants.LastUpdated).CurrentValue = now;
                 IncludeSelectedTagsInNote(note, selectableTags);
                 foreach (NoteTag ntt in note.NoteTags)
                 {
                     _context.NoteTag.Add(ntt);
+                    _context.Entry(ntt).Property(Constants.LastUpdated).CurrentValue = now;
                 }
                 note.Comments.Clear();
                 foreach (var cmt in comments)
@@ -92,6 +96,7 @@ namespace noter.Services
                     Comment newComment = new Comment{Payload = cmt.Payload};
                     note.Comments.Add(newComment);
                     _context.CommentSet.Add(newComment );
+                    _context.Entry(newComment).Property(Constants.LastUpdated).CurrentValue = now;
                 }
                 int x = await _context.SaveChangesAsync();
                 return UpdateResult.Success;

@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using noter.Data;
 using noter.Entities;
+using noter.Common;
+using System;
 
 namespace noter.Services
 {
@@ -31,12 +34,14 @@ namespace noter.Services
         public async Task AddAsync(Tag tag)
         {
             _dbContext.Tag.Add(tag);
+            _dbContext.Entry(tag).Property(Constants.LastUpdated).CurrentValue = DateTime.Now;
             await _dbContext.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(Tag tag)
         {
             _dbContext.Tag.Update(tag);
+            _dbContext.Entry(tag).Property(Constants.LastUpdated).CurrentValue = DateTime.Now;
             await _dbContext.SaveChangesAsync();
         }
 
