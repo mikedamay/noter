@@ -27,6 +27,8 @@ namespace noter
 //                options.UseSqlServer(GetIdentityConnectionString()));
             services.AddDbContext<NoteDbContext>(options =>
                 options.UseSqlServer(GetNoteConnetionString()));
+            services.AddDbContext<ExperimentalDbContext>(options =>
+                options.UseSqlServer(GetExperimentalConnectionString()));
 //            services.AddIdentity<ApplicationUser, IdentityRole>()
 //                .AddEntityFrameworkStores<ApplicationDbContext>()
 //                .AddDefaultTokenProviders();
@@ -66,6 +68,7 @@ namespace noter
 
         private string GetNoteConnetionString() => GetConnetionString("Note");
         private string GetIdentityConnetionString() => GetConnetionString("Identity");
+        private string GetExperimentalConnectionString() => GetConnetionString("Experimental");
         private string GetConnetionString(string prefix)
         {
             var osNames = new Dictionary<Os, string>
