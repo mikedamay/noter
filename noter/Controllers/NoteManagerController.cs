@@ -173,6 +173,7 @@ namespace noter.Controllers
             comment.Id = GetTempCommentId(comments);
             comments.Add(comment);
             vm.Comments = comments;
+            vm.SelectableTags = vm.SelectableTags ?? new List<SelectableTag>();
             AddEditSubViewsToViewBag(ViewBag);
             return View("Maintenance", vm);
         }
@@ -181,6 +182,7 @@ namespace noter.Controllers
             Assert(vm.Comments != null);
             var newComments = vm.Comments.Where(c => c.Id != commentId).ToList();
             vm.Comments = newComments;
+            vm.SelectableTags = vm.SelectableTags ?? new List<SelectableTag>();
             AddEditSubViewsToViewBag(ViewBag);
             return View("Maintenance", vm);
         }

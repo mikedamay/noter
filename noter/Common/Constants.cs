@@ -4,5 +4,6 @@
     {
         public const long NewEntityId = -1;
         public const string LastUpdated = "LastUpdated";
+        public const string UserId = "UserId";
     }
 }

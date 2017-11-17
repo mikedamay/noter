@@ -43,9 +43,13 @@ namespace noter.Migrations
 
                     b.Property<string>("Payload");
 
+                    b.Property<long>("UserId");
+
                     b.HasKey("Id");
 
                     b.HasIndex("NoteId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Comments");
                 });
@@ -80,9 +84,13 @@ namespace noter.Migrations
 
                     b.Property<DateTime>("LastUpdated");
 
+                    b.Property<long>("UserId");
+
                     b.HasKey("NoteId", "TagId");
 
                     b.HasIndex("TagId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("NoteTag");
                 });
@@ -105,7 +113,11 @@ namespace noter.Migrations
                         .IsRequired()
                         .HasMaxLength(80);
 
+                    b.Property<long>("UserId");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Tag");
                 });
@@ -128,6 +140,11 @@ namespace noter.Migrations
                         .WithMany("Comments")
                         .HasForeignKey("NoteId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("noter.Entities.User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("noter.Entities.Note", b =>
@@ -148,6 +165,19 @@ namespace noter.Migrations
                         .WithMany("NoteTags")
                         .HasForeignKey("TagId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("noter.Entities.User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("noter.Entities.Tag", b =>
+                {
+                    b.HasOne("noter.Entities.User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618
         }

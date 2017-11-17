@@ -26,6 +26,12 @@ namespace noter.Data
             mb.Entity<Tag>().Property<DateTime>(Constants.LastUpdated);
             mb.Entity<Comment>().Property<DateTime>(Constants.LastUpdated);
             mb.Entity<NoteTag>().Property<DateTime>(Constants.LastUpdated);
+            mb.Entity<Tag>().Property<long>(Constants.UserId);
+            mb.Entity<Comment>().Property<long>(Constants.UserId);
+            mb.Entity<NoteTag>().Property<long>(Constants.UserId);
+            mb.Entity<Tag>().HasOne<User>().WithMany().HasForeignKey(Constants.UserId).OnDelete(DeleteBehavior.Restrict);
+            mb.Entity<Comment>().HasOne<User>().WithMany().HasForeignKey(Constants.UserId).OnDelete(DeleteBehavior.Restrict);
+            mb.Entity<NoteTag>().HasOne<User>().WithMany().HasForeignKey(Constants.UserId).OnDelete(DeleteBehavior.Restrict);
             mb.Entity<Comment>().HasOne<Note>().WithMany(n => n.Comments).HasForeignKey("NoteId")
                 .OnDelete(DeleteBehavior.Cascade);
         }

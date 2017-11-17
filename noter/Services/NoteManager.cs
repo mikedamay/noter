@@ -91,6 +91,7 @@ namespace noter.Services
                 {
                     _context.NoteTag.Add(ntt);
                     _context.Entry(ntt).Property(Constants.LastUpdated).CurrentValue = now;
+                    _context.Entry(ntt).Property(Constants.UserId).CurrentValue = user.Id;
                 }
                 note.Comments.Clear();
                 foreach (var cmt in comments)
@@ -99,6 +100,7 @@ namespace noter.Services
                     note.Comments.Add(newComment);
                     _context.CommentSet.Add(newComment );
                     _context.Entry(newComment).Property(Constants.LastUpdated).CurrentValue = now;
+                    _context.Entry(newComment).Property(Constants.UserId).CurrentValue = user.Id;
                 }
                 int x = await _context.SaveChangesAsync();
                 return UpdateResult.Success;

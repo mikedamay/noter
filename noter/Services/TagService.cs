@@ -33,15 +33,19 @@ namespace noter.Services
 
         public async Task AddAsync(Tag tag)
         {
+            var user = new User {Id = 1};
             _dbContext.Tag.Add(tag);
             _dbContext.Entry(tag).Property(Constants.LastUpdated).CurrentValue = DateTime.Now;
+            _dbContext.Entry(tag).Property(Constants.UserId).CurrentValue = user.Id;
             await _dbContext.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(Tag tag)
         {
+            var user = new User {Id = 1};
             _dbContext.Tag.Update(tag);
             _dbContext.Entry(tag).Property(Constants.LastUpdated).CurrentValue = DateTime.Now;
+            _dbContext.Entry(tag).Property(Constants.UserId).CurrentValue = user.Id;
             await _dbContext.SaveChangesAsync();
         }
 

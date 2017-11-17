@@ -11,8 +11,8 @@ using System;
 namespace noter.Migrations
 {
     [DbContext(typeof(NoteDbContext))]
-    [Migration("20171113095047_ShortenTagName")]
-    partial class ShortenTagName
+    [Migration("20171117084733_NoteTagCommet")]
+    partial class NoteTagCommet
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -38,13 +38,19 @@ namespace noter.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<DateTime>("LastUpdated");
+
                     b.Property<long?>("NoteId");
 
                     b.Property<string>("Payload");
 
+                    b.Property<long>("UserId");
+
                     b.HasKey("Id");
 
                     b.HasIndex("NoteId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Comments");
                 });
@@ -54,7 +60,13 @@ namespace noter.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<DateTime>("LastUpdated");
+
                     b.Property<string>("Payload");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(80);
 
                     b.Property<long?>("UserId");
 
@@ -71,9 +83,15 @@ namespace noter.Migrations
 
                     b.Property<long>("TagId");
 
+                    b.Property<DateTime>("LastUpdated");
+
+                    b.Property<long>("UserId");
+
                     b.HasKey("NoteId", "TagId");
 
                     b.HasIndex("TagId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("NoteTag");
                 });
@@ -86,6 +104,8 @@ namespace noter.Migrations
                     b.Property<string>("Details")
                         .IsRequired();
 
+                    b.Property<DateTime>("LastUpdated");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(10);
@@ -94,7 +114,11 @@ namespace noter.Migrations
                         .IsRequired()
                         .HasMaxLength(80);
 
+                    b.Property<long>("UserId");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Tag");
                 });
@@ -115,7 +139,13 @@ namespace noter.Migrations
                 {
                     b.HasOne("noter.Entities.Note")
                         .WithMany("Comments")
-                        .HasForeignKey("NoteId");
+                        .HasForeignKey("NoteId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("noter.Entities.User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("noter.Entities.Note", b =>
@@ -136,6 +166,19 @@ namespace noter.Migrations
                         .WithMany("NoteTags")
                         .HasForeignKey("TagId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("noter.Entities.User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("noter.Entities.Tag", b =>
+                {
+                    b.HasOne("noter.Entities.User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618
         }
