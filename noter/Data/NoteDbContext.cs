@@ -26,6 +26,8 @@ namespace noter.Data
             mb.Entity<Tag>().Property<DateTime>(Constants.LastUpdated);
             mb.Entity<Comment>().Property<DateTime>(Constants.LastUpdated);
             mb.Entity<NoteTag>().Property<DateTime>(Constants.LastUpdated);
+            mb.Entity<Comment>().HasOne<Note>().WithMany(n => n.Comments).HasForeignKey("NoteId")
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
         public DbSet<noter.Entities.Note> Note { get; set; }

@@ -11,9 +11,10 @@ using System;
 namespace noter.Migrations
 {
     [DbContext(typeof(NoteDbContext))]
-    partial class NoteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20171117065924_NoteDeleteCascade")]
+    partial class NoteDeleteCascade
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
