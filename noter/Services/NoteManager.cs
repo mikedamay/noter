@@ -74,7 +74,9 @@ namespace noter.Services
             {
                 _context.Database.ExecuteSqlCommand("delete from NoteTag where Noteid = {0}", note.Id);
                 _context.Database.ExecuteSqlCommand("delete from Comments where Noteid = {0}", note.Id);
-
+                var user = new User {Id = 1};
+                _context.User.Attach(user);
+                note.User = user;
                 if (IsNewNote(note))
                 {
                     _context.Add(note);
