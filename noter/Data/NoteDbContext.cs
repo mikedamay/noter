@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using noter.Entities;
 using noter.Common;
 
@@ -19,9 +21,14 @@ namespace noter.Data
 
         protected override void OnModelCreating(ModelBuilder mb)
         {
-            mb.Entity<NoteTag>().HasKey(nt => new {nt.NoteId, nt.TagId});
-            mb.Entity<NoteTag>().HasOne(nt => nt.Note).WithMany(n => n.NoteTags).HasForeignKey(nt => nt.NoteId);
-            mb.Entity<NoteTag>().HasOne(nt => nt.Tag).WithMany(t => t.NoteTags).HasForeignKey(nt => nt.TagId);
+            EntityTypeBuilder<NoteTag> etb_nt = mb.Entity<NoteTag>();
+            KeyBuilder kb_nt = etb_nt.HasKey(nt => new {nt.NoteId, nt.TagId});
+            ReferenceNavigationBuilder<NoteTag, Note> rnb_ntn = etb_nt.HasOne<Note>(nt => nt.Note);
+            ReferenceCollectionBuilder<Note, NoteTag> rcb_ntn = rnb_ntn.WithMany();
+            ReferenceCollectionBuilder<Note, NoteTag> rcb_ntn2 = rcb_ntn.HasForeignKey(nt => nt.NoteId);
+            ReferenceNavigationBuilder<NoteTag, Tag> rnb_ntt = etb_nt.HasOne(nt => nt.Tag);
+            ReferenceCollectionBuilder<Tag, NoteTag> rcb_ntt = rnb_ntt.WithMany(t => t.NoteTags);
+            ReferenceCollectionBuilder<Tag, NoteTag> rcb_ntt2 = rcb_ntt.HasForeignKey(nt => nt.TagId);
             mb.Entity<Note>().Property<DateTime>(Constants.LastUpdated);
             mb.Entity<Tag>().Property<DateTime>(Constants.LastUpdated);
             mb.Entity<Comment>().Property<DateTime>(Constants.LastUpdated);
@@ -29,7 +36,7 @@ namespace noter.Data
             mb.Entity<Tag>().Property<long>(Constants.UserId);
             mb.Entity<Comment>().Property<long>(Constants.UserId);
             mb.Entity<NoteTag>().Property<long>(Constants.UserId);
-            mb.Entity<Tag>().HasOne<User>().WithMany().HasForeignKey(Constants.UserId).OnDelete(DeleteBehavior.Restrict);
+            mb.Entity<Tag>().HasOne<User>().WithMany().HasForeignKey(nameof(Constants.UserId)).OnDelete(DeleteBehavior.Restrict);
             mb.Entity<Comment>().HasOne<User>().WithMany().HasForeignKey(Constants.UserId).OnDelete(DeleteBehavior.Restrict);
             mb.Entity<NoteTag>().HasOne<User>().WithMany().HasForeignKey(Constants.UserId).OnDelete(DeleteBehavior.Restrict);
             mb.Entity<Comment>().HasOne<Note>().WithMany(n => n.Comments).HasForeignKey("NoteId")
