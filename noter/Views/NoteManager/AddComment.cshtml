@@ -19,7 +19,7 @@
             int ii = 0;
             foreach (noter.Entities.Comment comment in Model)
             {
-                <div class="row" display:flex; align-items: center">
+                <div class="row" style="display:flex; align-items: center">
                     <input type="hidden" name="@GetFullPropertyyName(ii, nameof(comment.Id))" value="@comment.Id" aria-hidden="True"/>
                     <div class="form-group col-md-11">
 @*                        <label asp-for="@comment.Payload" class="control-label"></label>*@

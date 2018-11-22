@@ -1,34 +1,20 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using System;
-using System.Collections.Generic;
 
 namespace noter.Migrations
 {
-    public partial class NoteTagCommet : Migration
+    public partial class windows : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Another",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Explanation = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Another", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "User",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    UserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -39,12 +25,12 @@ namespace noter.Migrations
                 name: "Note",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    LastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Payload = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Title = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false),
-                    UserId = table.Column<long>(type: "bigint", nullable: true)
+                    Title = table.Column<string>(maxLength: 80, nullable: false),
+                    Payload = table.Column<string>(nullable: true),
+                    UserId = table.Column<long>(nullable: true),
+                    LastUpdated = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -61,13 +47,13 @@ namespace noter.Migrations
                 name: "Tag",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Details = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    ShortDescription = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false),
-                    UserId = table.Column<long>(type: "bigint", nullable: false)
+                    Name = table.Column<string>(maxLength: 10, nullable: false),
+                    ShortDescription = table.Column<string>(maxLength: 80, nullable: false),
+                    Details = table.Column<string>(nullable: false),
+                    LastUpdated = table.Column<DateTime>(nullable: false),
+                    UserId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -84,12 +70,12 @@ namespace noter.Migrations
                 name: "Comments",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    LastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    NoteId = table.Column<long>(type: "bigint", nullable: true),
-                    Payload = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<long>(type: "bigint", nullable: false)
+                    Payload = table.Column<string>(nullable: true),
+                    LastUpdated = table.Column<DateTime>(nullable: false),
+                    NoteId = table.Column<long>(nullable: true),
+                    UserId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -112,10 +98,10 @@ namespace noter.Migrations
                 name: "NoteTag",
                 columns: table => new
                 {
-                    NoteId = table.Column<long>(type: "bigint", nullable: false),
-                    TagId = table.Column<long>(type: "bigint", nullable: false),
-                    LastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserId = table.Column<long>(type: "bigint", nullable: false)
+                    NoteId = table.Column<long>(nullable: false),
+                    TagId = table.Column<long>(nullable: false),
+                    LastUpdated = table.Column<DateTime>(nullable: false),
+                    UserId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -173,9 +159,6 @@ namespace noter.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Another");
-
             migrationBuilder.DropTable(
                 name: "Comments");
 

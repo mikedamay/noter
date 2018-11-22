@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis.Differencing;
 using noter.Common;
 //using Microsoft.EntityFrameworkCore;
 using noter.Entities;
-using noter.Migrations;
+//using noter.Migrations;
 using noter.Services;
 using noter.ViewModel;
 using static noter.Common.Utils;
